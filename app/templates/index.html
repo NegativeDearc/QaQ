@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <title>MOVE QaQ System</title>
+
+    <link rel="stylesheet" href="{{ url_for("static", filename='bootstrap-3.3.7-dist/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for("static", filename='buttons.css') }}">
+    <link rel="stylesheet" href="{{ url_for("static", filename='animate.css') }}">
+
+    <script src="{{ url_for("static", filename="jquery-3.2.1.min.js") }}"></script>
+    <script src="{{ url_for("static", filename="bootstrap-3.3.7-dist/js/bootstrap.min.js") }}"></script>
+
+    <style>
+        body {
+        }
+        .navbar-default {border-radius: 0px;box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.2);background: rgba(255, 255, 255, 0.9);opacity: 0.8;}
+        .container {margin-top: 50px}
+        .jumbotron {text-align: center}
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-default" role="navigation">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">MOVE QaQ System</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav navbar-right">
+        {% if not current_user.is_authenticated %}
+            <li role="presentation"><a href="/backend">尚未登陆&nbsp;</a></li>
+        {% else %}
+            <li role="presentation"><a href="">欢迎,&nbsp;{{ current_user.nickname }}</a></li>
+        {% endif %}
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+
+<div class="container">
+    <div class="category" style="text-align: center">
+        <button class="category_list button button-glow button-border button-rounded button-primary active" name="all">全部</button>
+
+        {% for category in categories %}
+            <button class="category_list button button-glow button-border button-rounded button-primary active" name="{{ category[0] }}">{{ category[0]|safe }}</button>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="container" id="q_c">
+    <div class="jumbotron">
+        <small style="float: right;margin-top: -10px;color: grey"><a id="problem">题目有问题?</a></small>
+        <div id="question"></div>
+        <hr>
+        <div class="answer_box" style="display: none;">
+            <div id="answer"></div>
+        </div>
+        <div style="margin-top: 20px!important;margin-bottom: -20px!important;">
+            <button class="button button-raised button-caution" id="start">Start</button>
+            <button class="button button-raised button-royal" id="result">Answer</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    $.fn.extend({
+    animateCss: function (animationName, callback) {
+        var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
+        this.addClass('animated ' + animationName).one(animationEnd, function() {
+            $(this).removeClass('animated ' + animationName);
+            if (callback) {
+                callback();
+            }
+        });
+            return this;
+        }
+    });
+
+    var qid = undefined;
+    var category = undefined;
+
+    $("#start").on('click', function(){
+        if (qid.length == 0) {alert('已经是最后一个问题');return false;}
+
+        var index = qid.shift();
+
+        $.ajax({
+            beforeSend: function(){
+                $(".answer_box").hide();
+                $('#question').animateCss('fadeInLeft', function () {});
+            },
+            async: true,//set to false MUST if need to ajax again in the success step
+            url: '/apiv1.0/querycontent',
+            method: 'GET',
+            data: {'qid': index},
+            success: function(data){
+                console.log(data);
+                $("#question").html(data['content']['content']);
+                $("#answer").html(data['content']['answer']);
+                $("#problem").attr('href', '/backend?edit=true&uid=' + data['content']['uuid']);
+            }
+        });
+    });
+
+    $("#result").on('click', function(){
+        $(".answer_box").slideToggle();
+    });
+
+    $(".category_list").on('click', function(){
+        $(".category_list").addClass("active");
+        $(this).removeClass("active");
+        var category = this.name;
+        $.ajax({
+            async: true,//set to false MUST if need to ajax again in the success step
+            url: '/apiv1.0/queryid',
+            method: 'GET',
+            data: {'category': category},
+            success: function(data){
+                qid = data['query_id'];
+            }
+        });
+    });
+
+</script>
+</body>
+</html>
