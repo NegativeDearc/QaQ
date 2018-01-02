@@ -48,7 +48,7 @@ def main_upload_image():
     url = os.path.join(config_dict['pro'].IMAGE_UPLOAD_PATH, filename)
     print url
     f.save(url)
-    response = make_response('static/img/%s' % f.filename)
+    response = make_response('static/img/%s' % filename)
     return response
 
 
