@@ -257,8 +257,8 @@
 
 .button-action,
 .button-action-flat {
-  background-color: #A5DE37;
-  border-color: #A5DE37;
+  background-color: rgb(0, 137, 61);
+  border-color: rgb(0, 137, 61);
   color: #FFF; }
   .button-action:visited,
   .button-action-flat:visited {
@@ -530,7 +530,7 @@
   .button-border.button-action, .button-action.button-border-thin, .button-action.button-border-thick,
   .button-border-thin.button-action,
   .button-border-thick.button-action {
-    color: #A5DE37; }
+    color: rgb(0, 137, 61); }
     .button-border.button-action:hover, .button-action.button-border-thin:hover, .button-action.button-border-thick:hover, .button-border.button-action:focus, .button-action.button-border-thin:focus, .button-action.button-border-thick:focus,
     .button-border-thin.button-action:hover,
     .button-border-thin.button-action:focus,
@@ -679,7 +679,7 @@
   .button-borderless.button-inverse {
     color: #222; }
   .button-borderless.button-action {
-    color: #A5DE37; }
+    color: rgb(0, 137, 61); }
   .button-borderless.button-highlight {
     color: #FEAE1B; }
   .button-borderless.button-caution {

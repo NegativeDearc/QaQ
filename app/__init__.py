@@ -38,7 +38,6 @@ def create_app(config=None):
     api.add_resource(MainContent, '/apiv1.0/querycontent', endpoint='content')
     api.add_resource(QueryId, '/apiv1.0/queryid', endpoint='queryid')
 
-
     return app
 
 

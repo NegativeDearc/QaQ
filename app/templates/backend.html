@@ -27,7 +27,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">MOVE QaQ System</a>
+      <a class="navbar-brand" href="#">SCN Coaching Game</a>
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
@@ -61,10 +61,9 @@
                 <h5>题目分类</h5>
                 <select class="form-control" name="category">
                     <option value="0000">----选择分类---</option>
-                    <option value="Lean">精益原则</option>
+                    <option value="MOVE">精益原则</option>
                     <option value="QUALITY">投身质量</option>
-                    <option value="six-sigma">六西格玛</option>
-                    <option value="SCN-vision">四厂愿景</option>
+                    <option value="SIX-SIGMA">六西格玛</option>
                 </select>
                 <h5>题目正文</h5>
                 <div><textarea id="content" name="content" class="summernote">{{ database.get('content', '') }}</textarea></div>
@@ -92,12 +91,34 @@
 </div>
 
 <script>
+    function sendFile(file) {
+        data = new FormData();
+        data.append("file", file);
+        $.ajax({
+            data: data,
+            type: 'POST',
+            cache: false,
+            url: '/upload/image',
+            contentType: false,
+            processData: false,
+            success: function(url){
+                console.log(url);
+                $("#answer").summernote('insertImage', url)
+            }
+        })
+    }
+
     $(document).ready(function(){
         $('.summernote').summernote({
             placeholder: '开始书写....',
             height: 120,
             tabsize: 2,
-            lang: 'zh-CN'
+            lang: 'zh-CN',
+            callbacks:{
+                onImageUpload: function(files){
+                    sendFile(files[0])
+                }
+            }
         });
     })
 </script>

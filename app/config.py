@@ -8,6 +8,7 @@ class Config(object):
                               os.path.abspath(
                                   os.path.join(os.path.dirname(__file__), 'models', 'main.db')
                               )
+    IMAGE_UPLOAD_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), 'static', 'img'))
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     SQLALCHEMY_ECHO = True
 

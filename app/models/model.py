@@ -38,6 +38,7 @@ class qanda(db.Model):
     title = db.Column(db.String(50), nullable=False)
     content = db.Column(db.String(200), nullable=False)
     answer = db.Column(db.String(200), nullable=False)
+    picture = db.Column(db.String(50))
     add_time = db.Column(db.DATETIME)
 
     def __init__(self, form):
@@ -46,6 +47,7 @@ class qanda(db.Model):
         self.title = form.get("title", None)
         self.content = form.get("content", None)
         self.answer = form.get("answer", None)
+        self.picture = form.get('picture', None)
         self.add_time = _get_now()
 
     @classmethod

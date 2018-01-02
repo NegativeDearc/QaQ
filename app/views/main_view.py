@@ -1,7 +1,11 @@
-from flask import Blueprint, render_template, request, redirect, url_for, g, flash
+from flask import Blueprint, render_template, request, redirect, url_for, g, flash, make_response
 from app.models.model import db, qanda, login
 from flask_login import login_required, login_user, logout_user, current_user, login_fresh, login_url
 from sqlalchemy.sql import or_
+from app.config import config_dict
+import os
+import time
+
 
 main = Blueprint('main', __name__)
 
@@ -36,6 +40,18 @@ def main_login():
     return render_template("login.html")
 
 
+@main.route('/upload/image', methods=['POST'])
+def main_upload_image():
+    f = request.files['file']
+    postfix = f.filename.split('.')[-1]
+    filename = time.strftime("%Y%m%d%H%M%S", time.localtime()) + '.%s' % postfix
+    url = os.path.join(config_dict['pro'].IMAGE_UPLOAD_PATH, filename)
+    print url
+    f.save(url)
+    response = make_response('static/img/%s' % f.filename)
+    return response
+
+
 @main.route('/backend', methods=["GET", "POST"])
 @login_required
 def main_backend():
@@ -48,6 +64,7 @@ def main_backend():
         database = qanda.query_uid(uuid)
 
     if request.method == 'POST':
+        # insert new recorder
         if 'sub_new' in request.form.keys():
             print request.form
             try:
@@ -56,7 +73,7 @@ def main_backend():
             except Exception:
                 db.session.rollback()
             return redirect(url_for("main.main_backend"))
-
+        # update an exist recorder
         if 'update_' in request.form.keys():
             print request.form
             try:
