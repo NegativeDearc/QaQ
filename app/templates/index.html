@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <title>SCN Coaching Game</title>
 
@@ -18,9 +18,14 @@
 
     <style>
         body {
+            height:100vh;
+            background-image: radial-gradient(rgba(0, 137, 61, 0.2), #ffffff);
         }
-        .navbar-default {border-radius: 0px;box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.2);background: rgba(255, 255, 255, 0.9);opacity: 0.8;}
-        .container {margin-top: 50px}
+        .navbar-default {border-radius: 0px;box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.2);background: transparent;opacity: 0.8;}
+        .container {margin-top: 10px}
+        .jumbotron {
+            background: transparent;
+        }
         .jumbotron > #question {text-align: center}
         .jumbotron > .buttons {text-align: center}
     </style>
@@ -53,21 +58,19 @@
 </nav>
 
 <div class="container-fluid">
+    <div class="category" style="text-align: center">
+        <button class="category_list button button-glow button-border button-rounded button-action active" name="all">全部</button>
 
-    <div class="row">
-        <div class="col-md-2">
-            <div class="category" style="text-align: center">
-                <button class="category_list button button-glow button-border button-rounded button-action active" name="all">全部</button>
-
-                {% for category in categories %}
-                    {% if category[0] != '0000' %}
-                        <button class="category_list button button-glow button-border button-rounded button-action active" name="{{ category[0] }}">{{ category[0]|safe }}</button>
-                    {% endif %}
-                {% endfor %}
+        {% for category in categories %}
+            {% if category[0] != '0000' %}
+                <button class="category_list button button-glow button-border button-rounded button-action active" name="{{ category[0] }}">{{ category[0]|safe }}</button>
+            {% endif %}
+        {% endfor %}
     </div>
-        </div>
-        <div class="col-md-10">
-            <div class="jumbotron">
+</div>
+
+<div class="container">
+    <div class="jumbotron">
         <small style="float: right;margin-top: -10px;color: grey"><a id="problem">题目有问题?</a></small>
         <div id="question"></div>
         <hr>
@@ -77,8 +80,6 @@
         <div style="margin-top: 20px!important;margin-bottom: -20px!important;" class="buttons">
             <button class="button button-raised button-caution" id="start">Q</button>
             <button class="button button-raised button-royal" id="result">A</button>
-        </div>
-    </div>
         </div>
     </div>
 
