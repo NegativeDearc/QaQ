@@ -8,6 +8,8 @@
 
     <link rel="stylesheet" href="{{ url_for("static", filename='bootstrap-3.3.7-dist/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for("static", filename='zoom.js/css/zoom.css') }}">
+    <link rel="stylesheet" href="{{ url_for("static", filename='slick-1.8.0/slick/slick.css') }}">
+    <link rel="stylesheet" href="{{ url_for("static", filename='slick-1.8.0/slick/slick-theme.css') }}">
     <link rel="stylesheet" href="{{ url_for("static", filename='buttons.css') }}">
     <link rel="stylesheet" href="{{ url_for("static", filename='animate.css') }}">
 
@@ -15,6 +17,7 @@
     <script src="{{ url_for("static", filename="bootstrap-3.3.7-dist/js/bootstrap.min.js") }}"></script>
     <script src="{{ url_for("static", filename="zoom.js/dist/transition.js") }}"></script>
     <script src="{{ url_for("static", filename="zoom.js/dist/zoom.min.js") }}"></script>
+    <script src="{{ url_for("static", filename="slick-1.8.0/slick/slick.min.js") }}"></script>
 
     <style>
         body {
@@ -28,8 +31,12 @@
         }
         .jumbotron > #question {text-align: center}
         .jumbotron > .buttons {text-align: center}
+        .slick-arrow {color: rgb(0, 137, 61)}
+
     </style>
 </head>
+<script>
+</script>
 <body>
 <nav class="navbar navbar-default" role="navigation">
   <div class="container-fluid">
@@ -74,20 +81,28 @@
         <small style="float: right;margin-top: -10px;color: grey"><a id="problem">题目有问题?</a></small>
         <div id="question"></div>
         <hr>
-        <div class="answer_box" style="display: none;">
+        <div class="answer_box container" style="display: none;">
             <div id="answer"></div>
         </div>
-        <div style="margin-top: 20px!important;margin-bottom: -20px!important;" class="buttons">
+        <div style="margin-top: 20px!important;margin-bottom: -30px!important;" class="buttons">
             <button class="button button-raised button-caution" id="start">Q</button>
             <button class="button button-raised button-royal" id="result">A</button>
         </div>
     </div>
 
 </div>
-
-
-
 <script>
+    function getSliderSettings(){
+        return {
+            dots: true,
+            infinite: true,
+            slidesToShow: 1,
+            slidesToScroll: 1,
+            zIndex: 100,
+            adaptiveHeight: true //会造成卡顿
+      }
+    }
+
     $.fn.extend({
     animateCss: function (animationName, callback) {
         var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
@@ -104,13 +119,29 @@
     var qid = undefined;
     var category = undefined;
 
+    var update_slider = function(){
+        if($("img").length > 1 ){
+            $("img").removeAttr('data-action');
+            $(".answer_box").append('<div id="slider" style="display: none;width: 75%;margin: 0 auto;"></div>');
+            var img_content = $("img");
+            img_content.attr('style', 'width: 100%;');
+            img_content.each(function(){
+                $("#slider").append($('<div class="swiper-slide">slide 1</div>').html($(this)[0]))
+            });
+            $("#slider").show();
+            $("#answer").html('');
+        }
+    };
+
     $("#start").on('click', function(){
+
         if (qid.length == 0) {alert('已经是最后一个问题');return false;}
 
         var index = qid.shift();
 
         $.ajax({
             beforeSend: function(){
+                $('#slider').remove();
                 $(".answer_box").hide();
                 $('#question').animateCss('flipInX', function () {});
             },
@@ -119,17 +150,21 @@
             method: 'GET',
             data: {'qid': index},
             success: function(data){
-                console.log(data);
+                //console.log(data);
                 $("#question").html(data['content']['content']);
                 $("#answer").html(data['content']['answer']);
                 $("#problem").attr('href', '/backend?edit=true&uid=' + data['content']['uuid']);
                 $("img").attr('data-action',"zoom");
+                //轮播函数
+                update_slider();
             }
         });
     });
 
     $("#result").on('click', function(){
         $(".answer_box").slideToggle();
+        var $Object = $("#slider");
+        if( $Object.length == 1 ){$("#slider").slick(getSliderSettings())};
     });
 
     $(".category_list").on('click', function(){
@@ -146,7 +181,6 @@
             }
         });
     });
-
 </script>
 </body>
 </html>
