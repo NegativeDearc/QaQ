@@ -32,6 +32,9 @@
         .jumbotron > #question {text-align: center}
         .jumbotron > .buttons {text-align: center}
         .slick-arrow {color: rgb(0, 137, 61)}
+        :-webkit-full-screen {}
+        :-moz-full-screen {}
+        :-ms-fullscreen {height: 100%;   width: 100%}
 
     </style>
 </head>
@@ -92,6 +95,18 @@
 
 </div>
 <script>
+     function launchFullScreen(element) {  
+         if(element.requestFullscreen) {     
+             element.requestFullscreen();   
+         } else if(element.mozRequestFullScreen) {     
+             element.mozRequestFullScreen();   
+         } else if(element.webkitRequestFullscreen) {    
+             element.webkitRequestFullscreen();  
+         } else if(element.msRequestFullscreen) {    
+             element.msRequestFullscreen();  
+         } 
+     };
+    
     function getSliderSettings(){
         return {
             dots: true,
@@ -168,6 +183,7 @@
     });
 
     $(".category_list").on('click', function(){
+        launchFullScreen(document.documentElement); // 整个网页
         $(".category_list").addClass("active");
         $(this).removeClass("active");
         var category = this.name;
